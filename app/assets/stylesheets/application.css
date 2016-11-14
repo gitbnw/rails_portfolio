@@ -1,0 +1,293 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require bootstrap/dist/css/bootstrap
+ *= require_tree .
+ */
+ 
+
+
+ body {
+    overflow-x: hidden;
+    font-size: 20px;
+ }
+
+/* Toggle Styles */
+
+#wrapper {
+    height:100%;
+    padding-left: 0;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled {
+    padding-right: 300px;
+}
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    right: 300px;
+    /*width: 0;*/
+    height: 100%;
+    margin-right: -300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: slategray;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 300px;
+    padding:0px;
+    margin-right: -600px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px;
+    box-sizing:border-box;
+}
+
+#wrapper.toggled #page-content-wrapper {
+    position: absolute;
+    margin-left: -300px;
+    box-sizing:border-box;
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+    position: absolute;
+    top: 0;
+    width: 300px;
+    box-sizing:border-box;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    text-indent: 20px;
+    line-height: 40px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: #999999;
+}
+
+.sidebar-nav li a:hover {
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+    text-decoration: none;
+}
+
+.sidebar-nav > .sidebar-brand {
+    height: 65px;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.sidebar-nav > .sidebar-brand a {
+    color: #999999;
+}
+
+.sidebar-nav > .sidebar-brand a:hover {
+    color: #fff;
+    background: none;
+}
+
+@media(min-width:768px) {
+    #wrapper {
+        padding-right: 300px;
+        box-sizing:border-box;
+    }
+
+    #wrapper.toggled {
+        padding-right: 0;
+    }
+
+    #sidebar-wrapper {
+        width: 300px;
+        box-sizing:border-box;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+    width: 300px;
+    padding:0px;
+    margin-right: -600px;
+    }
+
+    #page-content-wrapper {
+        padding: 20px;
+        position: relative;
+    }
+
+    #wrapper.toggled #page-content-wrapper {
+        position: relative;
+        margin-left: 0;
+    }
+}
+
+
+
+.chat {
+  font: 400 14px 'Open Sans', sans-serif;
+  height: 100%;
+  width: 300px;
+  padding-left: 5px;
+  padding-right: 5px;
+  box-sizing:border-box;
+  position: relative;
+  overflow: hidden;
+
+}
+
+.chat-box {
+  margin-right: -32px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+/*  height: calc(100% - 300px);*/
+ 
+}
+
+.chat-message {
+   max-width: 75%;
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 25px;
+  clear: both;
+  margin:14px 4px 4px 4px;
+  
+}
+
+.chat-message:after,
+.chat-message:before {
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.chat-message.human:after {
+    left: 100%;
+	border-color: rgba(255, 255, 204, 0);
+	border-left-color: #FA6900;
+	border-width: 8px;
+	margin-top: -8px;
+	margin-left: -1.75px;
+}
+
+.chat-message.chatbot:before {
+    right: 100%;
+	border-color: rgba(255, 204, 0, 0);
+	border-right-color: #69D2E7;
+	border-width: 8px;
+	margin-top: -8px;
+	margin-right: -1.75px;
+}
+.chat-message.chatbot:after {
+	margin-right: -1.75px;
+}
+
+.chatbot {
+
+  background: #69D2E7;
+  margin-left: 14px;
+  
+  color: white;
+  float: left;
+  clear:both;
+}
+
+.human {
+  background: #FA6900;
+  color:white;
+  float: right;
+  clear:both; 
+  margin-right: 22px;
+}
+
+
+
+.chat-floor {
+
+    width:inherit;
+    bottom:0px;
+    position: absolute;
+}
+#messageForm {
+    /*bottom:0px;*/
+    /*position: absolute;*/
+}
+#messageForm .input-group {
+    display:inherit;
+}
+#messageForm input {
+    width: 70%;
+    display: inline-block;
+    margin-right: 8px;
+    border-radius: 5px;
+}
+
+#messageForm button {
+    display: inline-block;
+}
+
+.quickrep {
+  width: auto;
+  background: #08A4D8; 
+  color: white;
+  display: inline-block;
+  border-radius: 5px;
+  margin: 4px;
+  padding: 4px;
+text-align:center;
+line-height:42px;
+}
+
+.quickreplies-container {
+  position: relative;
+  margin-bottom: 12px;
+  width:auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+
+  bottom:0px;
+}
+
+.fade.ng-enter {
+  transition:0.5s linear all;
+  opacity:0;
+}
+
+.fade.ng-enter.ng-enter-active {
+  opacity:1;
+}
