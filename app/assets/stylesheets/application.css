@@ -151,8 +151,9 @@
         margin-left: 0;
     }
 }
-
-
+.site-header {
+    float:right;
+}
 
 .chat {
   font: 400 14px 'Open Sans', sans-serif;
@@ -283,11 +284,20 @@ line-height:42px;
   bottom:0px;
 }
 
-.fade.ng-enter {
-  transition:0.5s linear all;
+.chat-message.ng-enter {
+  /* standard transition code */
+  transition: .5s linear all;
   opacity:0;
 }
+.chat-message.ng-enter-stagger {
+  /* this will have a 500ms delay between each successive leave animation */
+  transition-delay: 3s;
 
-.fade.ng-enter.ng-enter-active {
+  /* As of 1.4.4, this must always be set: it signals ngAnimate
+    to not accidentally inherit a delay property from another CSS class */
+  transition-duration: 0s;
+}
+.chat-message.ng-enter.ng-enter-active {
+  /* standard transition styles */
   opacity:1;
 }

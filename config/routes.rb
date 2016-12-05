@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
   root to: 'application#angular'
+  get '*unmatched_route', :to => 'application#angular'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
@@ -17,6 +18,14 @@ Rails.application.routes.draw do
   
   resources :messages, only: [:index, :show]
   post '/converse' => 'messages#converse'
+  # resources :contact, only: [:index]
+
+  # get 'portfolio/blocipedia' => "portfolio#blocipedia"
+  # get 'portfolio/blocjamsang' => "portfolio#blocjamsang"
+  # get 'portfolio/alexa' => "portfolio#alexa"
+  # get 'portfolio/chatbot' => "portfolio#chatbot"
+  # get 'portfolio/pdfs' => "portfolio#pdfs"
+  # get 'portfolio/quota' => "portfolio#quota"
 
   # Example resource route with options:
   #   resources :products do

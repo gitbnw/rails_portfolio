@@ -108,7 +108,13 @@ module WitHelper
   	return @jobSummary
   end
   
-  def getJobs work_history
+  def getJobs 
+    
+  sys_adm = Job.new('Stellar Manufacturing', 'Systems Administrator', '2011 - 2014', 'Here he administered and supported a Windows environment from servers to workstations, SQL to Exchange.')  
+  data_analys = Job.new('JDA eHealth Systems', 'Data Analyst', '2014 - 2015', 'This position involved monitoring and troubleshooting multiple ETL processes of healthcare billing data. Most the related programming was Foxpro and SQL.')  
+  sys_analys = Job.new('the Village of Oak Park', 'Systems Analyst', '2015 - 2016', 'He developed a web application with a javascript front-end (ExtJS) and Coldfusion/SQL backend.  He also supported various applications with SQL programming.')  
+  
+  work_history = [sys_analys, data_analys, sys_adm]   
 
     jobStr = "Byron's last 3 jobs - starting at most recent - were as "
       work_history.each do |job|
@@ -129,6 +135,16 @@ module WitHelper
 
 		
 	end
+class Job
+  attr_accessor :company, :position, :span, :summary
+  def initialize(company, position, span, summary)  
+    @company = company  
+    @position = position
+    @span = span
+    @summary = summary
+  end
+
+end	
 class MyTime
 
   attr_accessor :starttime
