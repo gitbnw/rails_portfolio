@@ -17,6 +17,8 @@ class MessagesController < ApplicationController
       @responses = []
       @client.run_actions(@session_id, @q)
       @responses = @wit.responses
+      # @responses.each{|response| response["last"] = false }
+      # @responses.last["last"] = true
       
 
       respond_to do |format|

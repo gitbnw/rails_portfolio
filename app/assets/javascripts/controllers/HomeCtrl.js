@@ -4,26 +4,43 @@
          var d = Date.now();
          var $chatfloor = $('#chat-floor');
          var $chatbox = $('#chat-box');
-         
-         $( document ).ready(function() {
-                  var st = $('#side-toggle')
-                  st.show();
-                 st.click(function(e) {
-                     e.preventDefault();
-                     vm.initSession();
-                     $("#wrapper").toggleClass("toggled");
-                 });                  
-         });         
 
-         
-         vm.updateScroll = function() {
-          
-             var bottom = $chatfloor.height();
-             var remaining_height = parseInt(document.body.clientHeight - bottom);
+         $(document).ready(function() {
+             var st = $('#side-toggle')
+             st.show();
+             st.click(function(e) {
+                 e.preventDefault();
+                 vm.initSession();
+                 $("#wrapper").toggleClass("toggled");
+             });
              
 
+
+         });
+
+
+
+         //jquery to delay quickreplies-container by chat-message transition-delay:value x number of messages
+         vm.displayQuickCont = function() {
+             var $quickcontain = $('#quickreplies-container');
+             var $chat_message = $('.chat-message');
+
+             var message_delay_sum = $chat_message.length
+
+         };
+
+
+
+         vm.updateScroll = function() {
+
+             var bottom = $chatfloor.height();
+             var remaining_height = parseInt(document.body.clientHeight - bottom);
+
+
              $chatbox.height(remaining_height);
-             $chatbox.animate({ scrollTop: $chatbox.prop("scrollHeight")}, 1000);
+             $chatbox.animate({
+                 scrollTop: $chatbox.prop("scrollHeight")
+             }, 1000);
 
          };
 
@@ -46,6 +63,7 @@
          };
          vm.auth = Auth;
          vm.prepMessage = function(role, message = null) {
+
              if (role === "bot") {
                  vm.messageData.role = "chatbot";
                  vm.messageData.sentAt = Date.now();
@@ -59,50 +77,75 @@
              return vm.messageData;
 
          };
-         
-         vm.handleQuickReplies = function(bot_reply){
-               if (bot_reply.quickreplies) { 
-                  vm.messageData.quickreplies = bot_reply.quickreplies;
-              }          
+
+         vm.showQuickRepliesLast = function(message) {
+             if(message.quickreplies) {
+              var element = document.getElementById("message-" + message.$id);
+              var style = window.getComputedStyle(element);
+              var messages =  document.getElementsByClassName("ng-enter");
+    console.log(messages);
+            
+              // var $last_message = $('.chat-message').last();
+              // var doneFunc = function(){console.log('done')};
+              // $chat_message.addEventListener('transitionend', doneFunc, false);
+              // }
+    
+             //   if (data.last.quickreplies) { 
+             // var callback = console.log("message-" + message.$id + ' transitionend')
+             // element.addEventListener('transitionend', callback, false);
+             var $chat_message = $("#message-" + message.$id);
+
+
+             //  var $chat_message = $('.chat-message');
+             //  console.log($chat_message.length);
+             //  console.log($chat_message.last().css('height'))
+
+             //       $('.chat_message').prop('style').width
+
+               }          
          };
 
          vm.handleBotReply = function(bot_reply) {
+
+             if (bot_reply.quickreplies) {
+                 vm.messageData.quickreplies = bot_reply.quickreplies;
+                 
+             }
              //the bot will converse until it gets a stop
 
              var preppedMessage = vm.prepMessage("bot", bot_reply);
              Messages.send(preppedMessage).then(function() {
+                
              });
          };
-         
-         vm.initSession = function(){
-         
-          vm.auth.$signInAnonymously().then(function(firebaseUser) {
-                  $scope.firebaseUser = firebaseUser;
-                  $scope.session_id = $scope.firebaseUser.uid;
-                  $scope.wit_id = $scope.firebaseUser.uid + randomIntFromInterval(1, 99);
-                  witData.session_id = $scope.wit_id;
-                      // create a query for messages related to session
-                  vm.sessionMessages = Messages.getSessionMessages($scope.session_id);
- 
-                  //quick replies should only show for last session message
-                  vm.messageData = {};
-                  vm.messageData.session = $scope.session_id;
- 
-                  Wit.converse(witData)
-                      //call func to send response msg to firebase
-                      .success(function(data, status, headers, config) {
-                          witData.q = "";
-                          for (var i = 0; i < data.length; i++) {
-                              vm.handleBotReply(data[i]);
-                              
-                              vm.handleQuickReplies(data[i]);
-                              
-                          };
-                          vm.messageData.content = "";
-                      });
-              });
-          };
-             //sends to firebase, need for button
+
+         vm.initSession = function() {
+
+             vm.auth.$signInAnonymously().then(function(firebaseUser) {
+                 $scope.firebaseUser = firebaseUser;
+                 $scope.session_id = $scope.firebaseUser.uid + (new Date() / 1000);
+                 $scope.wit_id = $scope.firebaseUser.uid + (new Date() / 1000);
+                 witData.session_id = $scope.wit_id;
+                 // create a query for messages related to session
+
+                 vm.sessionMessages = Messages.getSessionMessages($scope.session_id);
+
+                 //quick replies should only show for last session message
+                 vm.messageData = {};
+                 vm.messageData.session = $scope.session_id;
+                 Wit.converse(witData)
+                     //call func to send response msg to firebase
+                     .success(function(data, status, headers, config) {
+                         witData.q = "";
+                        //  vm.showQuickRepliesLast(data);
+                         for (var i = 0; i < data.length; i++) {
+                             vm.handleBotReply(data[i]);
+                         };
+                         vm.messageData.content = "";
+                     });
+             });
+         };
+         //sends to firebase, need for button
          vm.sendMessage = function(messageData) {
              return Messages.send(messageData, $scope.session_id);
          };
@@ -120,7 +163,7 @@
 
          vm.userExchange = function() {
              vm.prepMessage("human");
-                 //send user message to firebase
+             //send user message to firebase
              Messages.send(vm.messageData)
                  .then(function() {
                      $scope.formData = {}; //reset form
@@ -131,10 +174,15 @@
                          .success(function(data, status, headers, config) {
                              for (var i = 0; i < data.length; i++) {
 
-                                         vm.handleBotReply(data[i]);
+                                 vm.handleBotReply(data[i]);
 
                              }
                          });
+                    //  var $chat_message = $('.chat-message');
+                    //  var callback = function() {
+                    //      console.log('last chat message transition done')
+                    //  };
+                    //  console.log($chat_message.last())//.addEventListener('transitionend', callback, false);                          
                  });
          };
      }

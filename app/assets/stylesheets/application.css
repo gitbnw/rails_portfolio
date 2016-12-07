@@ -273,11 +273,11 @@ text-align:center;
 line-height:42px;
 }
 
-.quickreplies-container {
+#quickreplies-container {
   position: relative;
   margin-bottom: 12px;
   width:auto;
-  display: flex;
+  display: none; /*flex*/
   flex-direction: column;
   justify-content: center; 
 
@@ -286,12 +286,12 @@ line-height:42px;
 
 .chat-message.ng-enter {
   /* standard transition code */
-  transition: .5s linear all;
+  transition: 1s linear all;
   opacity:0;
 }
 .chat-message.ng-enter-stagger {
   /* this will have a 500ms delay between each successive leave animation */
-  transition-delay: 3s;
+  transition-delay: .5s;
 
   /* As of 1.4.4, this must always be set: it signals ngAnimate
     to not accidentally inherit a delay property from another CSS class */
@@ -301,3 +301,4 @@ line-height:42px;
   /* standard transition styles */
   opacity:1;
 }
+

@@ -13,7 +13,7 @@
             getSessionMessages: function(sessionId) {
                 var sessionRef = ref.orderByChild("session").equalTo(sessionId)
                 var sessionMessages = $firebaseArray(sessionRef)
-             
+
                 return sessionMessages
 
             },

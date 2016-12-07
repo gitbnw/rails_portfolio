@@ -2,13 +2,13 @@
      <!-- Sidebar -->
       <div class="chat container" id="sidebar-wrapper">
          <div class="chat-box" id="chat-box">
-            <div class="chat-message" ng-class="message.role" ng-repeat="message in home.sessionMessages track by $index">
+            <div class="chat-message" ng-class="message.role" ng-repeat="message in home.sessionMessages track by $index" id="{{ 'message-' + message.$id }}">
                <!--<span> {{message.content}} </span>-->
-               <span ng-bind-html="message.content"></span> {{home.updateScroll()}}
+               <span ng-bind-html="message.content"></span> {{home.updateScroll()}} {{home.showQuickRepliesLast(message)}}
             </div>
          </div>
          <div class="chat-floor" id="chat-floor">
-            <div class="quickreplies-container container">
+            <div class="quickreplies-container container" id="quickreplies-container">
                <!--{{reply}}-->
                <button class="btn btn-info quickrep" ng-click="home.quickExchange(reply, $index + 1)" ng-repeat="reply in home.messageData.quickreplies track by $index">{{reply}}</button>
             </div>
