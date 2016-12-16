@@ -208,7 +208,7 @@
 .chat-message.chatbot:before {
     right: 100%;
 	border-color: rgba(255, 204, 0, 0);
-	border-right-color: #69D2E7;
+	border-right-color: #0A5565;;
 	border-width: 8px;
 	margin-top: -8px;
 	margin-right: -1.75px;
@@ -219,7 +219,7 @@
 
 .chatbot {
 
-  background: #69D2E7;
+  background: #0A5565;;
   margin-left: 14px;
   
   color: white;
@@ -287,11 +287,11 @@ line-height:42px;
 .chat-message.ng-enter {
   /* standard transition code */
   transition: 1s linear all;
-  opacity:0;
+  display:none;
 }
 .chat-message.ng-enter-stagger {
   /* this will have a 500ms delay between each successive leave animation */
-  transition-delay: .5s;
+  transition-delay: 2.5s;
 
   /* As of 1.4.4, this must always be set: it signals ngAnimate
     to not accidentally inherit a delay property from another CSS class */
@@ -299,6 +299,7 @@ line-height:42px;
 }
 .chat-message.ng-enter.ng-enter-active {
   /* standard transition styles */
-  opacity:1;
+  display:inline;
 }
+
 

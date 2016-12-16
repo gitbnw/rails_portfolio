@@ -4,7 +4,7 @@
          <div class="chat-box" id="chat-box">
             <div class="chat-message" ng-class="message.role" ng-repeat="message in home.sessionMessages track by $index" id="{{ 'message-' + message.$id }}">
                <!--<span> {{message.content}} </span>-->
-               <span ng-bind-html="message.content"></span> {{home.updateScroll()}} {{home.showQuickRepliesLast(message)}}
+               <span ng-bind-html="message.content"></span> {{home.updateScroll()}}
             </div>
          </div>
          <div class="chat-floor" id="chat-floor">

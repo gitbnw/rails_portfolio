@@ -55,3 +55,5 @@ group :development do
   gem 'spring'
 end
 
+gem 'cleverbot_io'
+

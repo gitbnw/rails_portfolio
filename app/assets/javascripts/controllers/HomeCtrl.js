@@ -13,13 +13,7 @@
                  vm.initSession();
                  $("#wrapper").toggleClass("toggled");
              });
-             
-
-
          });
-
-
-
          //jquery to delay quickreplies-container by chat-message transition-delay:value x number of messages
          vm.displayQuickCont = function() {
              var $quickcontain = $('#quickreplies-container');
@@ -29,24 +23,30 @@
 
          };
 
-
-
          vm.updateScroll = function() {
 
              var bottom = $chatfloor.height();
              var remaining_height = parseInt(document.body.clientHeight - bottom);
-
-
              $chatbox.height(remaining_height);
              $chatbox.animate({
                  scrollTop: $chatbox.prop("scrollHeight")
              }, 1000);
 
          };
-
+         
+         vm.delayQuickReplies = function(reply_count){
+            var delay = (reply_count * 2 * 1000)
+            $('#quickreplies-container').hide();
+            $('#quickreplies-container')
+              .delay(delay)
+              .queue(function (next) { 
+                $(this).css('display', 'flex'); 
+                vm.updateScroll();
+                next(); 
+              });               
+         };
 
          vm.sessionMessages = [];
-
 
          function randomIntFromInterval(min, max) {
              return Math.floor(Math.random() * (max - min + 1) + min);
@@ -61,6 +61,7 @@
              type: "msg",
              reset: "true"
          };
+         
          vm.auth = Auth;
          vm.prepMessage = function(role, message = null) {
 
@@ -77,32 +78,10 @@
              return vm.messageData;
 
          };
-
-         vm.showQuickRepliesLast = function(message) {
-             if(message.quickreplies) {
-              var element = document.getElementById("message-" + message.$id);
-              var style = window.getComputedStyle(element);
-              var messages =  document.getElementsByClassName("ng-enter");
-    console.log(messages);
-            
-              // var $last_message = $('.chat-message').last();
-              // var doneFunc = function(){console.log('done')};
-              // $chat_message.addEventListener('transitionend', doneFunc, false);
-              // }
-    
-             //   if (data.last.quickreplies) { 
-             // var callback = console.log("message-" + message.$id + ' transitionend')
-             // element.addEventListener('transitionend', callback, false);
-             var $chat_message = $("#message-" + message.$id);
-
-
-             //  var $chat_message = $('.chat-message');
-             //  console.log($chat_message.length);
-             //  console.log($chat_message.last().css('height'))
-
-             //       $('.chat_message').prop('style').width
-
-               }          
+         vm.replyCount = [];
+         
+         vm.showQuickRepliesLast = function(index) {
+          vm.replyCount.push(index);
          };
 
          vm.handleBotReply = function(bot_reply) {
@@ -114,6 +93,7 @@
              //the bot will converse until it gets a stop
 
              var preppedMessage = vm.prepMessage("bot", bot_reply);
+
              Messages.send(preppedMessage).then(function() {
                 
              });
@@ -133,11 +113,14 @@
                  //quick replies should only show for last session message
                  vm.messageData = {};
                  vm.messageData.session = $scope.session_id;
+
                  Wit.converse(witData)
                      //call func to send response msg to firebase
                      .success(function(data, status, headers, config) {
+
                          witData.q = "";
-                        //  vm.showQuickRepliesLast(data);
+                         vm.delayQuickReplies(data.length)
+
                          for (var i = 0; i < data.length; i++) {
                              vm.handleBotReply(data[i]);
                          };
@@ -160,6 +143,31 @@
              $scope.formData.option = index;
              vm.userExchange();
          };
+         
+         vm.cleverbotInit = function(omessage){
+             var witData = {
+                 v: d,
+                 q: "jibberjabber",
+                 type: "msg",
+                 reset: "true",
+                 omessage: omessage.content
+             }; 
+             var context = {
+                 jibberjabber: "true"
+             }
+             witData.session_id = $scope.wit_id;
+             
+                 Wit.converse(witData, context)
+                     //call func to send response msg to firebase
+                     .success(function(data, status, headers, config) {
+                         witData.q = "";
+                         vm.delayQuickReplies(data.length)
+                         for (var i = 0; i < data.length; i++) {
+                             vm.handleBotReply(data[i]);
+                         };
+                         vm.messageData.content = "";
+                     });             
+         },
 
          vm.userExchange = function() {
              vm.prepMessage("human");
@@ -172,17 +180,20 @@
                      //send user message to wit
                      Wit.converse(witData)
                          .success(function(data, status, headers, config) {
-                             for (var i = 0; i < data.length; i++) {
-
-                                 vm.handleBotReply(data[i]);
-
+                             // this data is the rendered json of the messages_controller #converse response
+                             // if wit doesn't understand initialize cleverbot track
+                             if (data[0].cleverbotInit) {
+                                 vm.cleverbotInit(vm.messageData)
+                             } else {
+                                 vm.delayQuickReplies(data.length)
+                                 for (var i = 0; i < data.length; i++) {
+    
+                                     vm.handleBotReply(data[i]);
+    
+                                 }
                              }
                          });
-                    //  var $chat_message = $('.chat-message');
-                    //  var callback = function() {
-                    //      console.log('last chat message transition done')
-                    //  };
-                    //  console.log($chat_message.last())//.addEventListener('transitionend', callback, false);                          
+                  
                  });
          };
      }
