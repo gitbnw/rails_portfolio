@@ -2,7 +2,7 @@ module WitHelper
 
 	class WitExtension
 		def initialize
-			access_token = "H54ADICW2CDDBJZI2C3PX7BGG5Z7HVS3"
+			access_token = ENV["wit_access_token"]
 			@responses = []
 			actions = {
 				send: -> (request, response) {
