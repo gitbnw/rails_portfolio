@@ -63,7 +63,7 @@
          };
          
          vm.auth = Auth;
-         vm.prepMessage = function(role, message = null) {
+         vm.prepMessage = function(role, message) {
 
              if (role === "bot") {
                  vm.messageData.role = "chatbot";
@@ -113,8 +113,8 @@
                  //quick replies should only show for last session message
                  vm.messageData = {};
                  vm.messageData.session = $scope.session_id;
-
-                 Wit.converse(witData)
+                var context = {};
+                 Wit.converse(witData, context)
                      //call func to send response msg to firebase
                      .success(function(data, status, headers, config) {
 
@@ -135,7 +135,8 @@
 
          //sends to Wit AI, need for button
          vm.messageWit = function(witData) {
-             return Wit.converse(witData);
+             var context = {};
+             return Wit.converse(witData, context);
          };
 
          vm.quickExchange = function(content, index) {
@@ -170,7 +171,8 @@
          },
 
          vm.userExchange = function() {
-             vm.prepMessage("human");
+             var message = null
+             vm.prepMessage("human", message);
              //send user message to firebase
              Messages.send(vm.messageData)
                  .then(function() {
@@ -178,7 +180,8 @@
                      witData.q = vm.messageData.content; //send same msg to wit
                      witData.session_id = $scope.wit_id;
                      //send user message to wit
-                     Wit.converse(witData)
+                     var context = {};
+                     Wit.converse(witData, context)
                          .success(function(data, status, headers, config) {
                              // this data is the rendered json of the messages_controller #converse response
                              // if wit doesn't understand initialize cleverbot track

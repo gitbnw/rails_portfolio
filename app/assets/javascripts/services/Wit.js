@@ -3,7 +3,7 @@
     function Wit($http) {
 
         return {
-            converse: function(witData, context = {}){
+            converse: function(witData, context){
               return $http({
                  url: "converse",
                  method: "POST",
