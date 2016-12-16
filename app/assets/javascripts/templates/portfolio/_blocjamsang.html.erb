@@ -4,7 +4,7 @@
          <ul>
             <li>
                <a class="page-link" href="/">
-               <img src="../assets/home.png" height="128" width="128">
+               <img src=<%= asset_path('home.png') %> height="128" width="128">
                </a>
             </li>
             <li>
@@ -14,7 +14,7 @@
       </nav>
    </header>
   <div class="call-out" 
-  style="background-image: url('/assets/background-2.jpg')">
+  style="background-image: url(<%= asset_path('background-2.jpg') %>)">
     <h1 class="site-title">
       <a href="/">Byron Weiss</a>
     </h1>
@@ -26,7 +26,7 @@
 
     <div class="content">
       <article >
-  <section class="post-content"><p class="center"><img src="/assets/blocjamsang.png" alt="" /></p>
+  <section class="post-content"><p class="center"><img src=<%= asset_path('blocjamsang.png') %> alt="" /></p>
 
 <h2 id="explanation">Explanation</h2>
 <p>This was some of my first exposure to building a front end with AngularJS and I’m eager to learn more.   The data binding is probably the main draw for me.</p>

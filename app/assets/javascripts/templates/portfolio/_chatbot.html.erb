@@ -15,7 +15,7 @@
    </header>
   
   <div class="call-out" 
-  style="background-image: url('/assets/background-2.jpg')">
+  style="background-image: url(<%= asset_path('background-2.jpg') %>)">
     <h1 class="site-title">
       <a href="/">Byron Weiss</a>
     </h1>
@@ -25,7 +25,7 @@
 
     <div class="content">
       <article >
-  <section class="post-content"><p class="center"><img src="/assets/chatbot.png" alt="" /></p>
+  <section class="post-content"><p class="center"><img src=<%= asset_path('chatbot.png') %> alt="" /></p>
 
 <h2 id="explanation">Explanation</h2>
 <p>In progress..</p>
