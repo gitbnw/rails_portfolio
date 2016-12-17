@@ -67,4 +67,6 @@ gem 'pg', group: :production
 
 gem 'puma', group: :production
 
+gem 'foreman'
+
 ruby "2.3.0"

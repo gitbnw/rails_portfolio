@@ -30,7 +30,7 @@
              $chatbox.height(remaining_height);
              $chatbox.animate({
                  scrollTop: $chatbox.prop("scrollHeight")
-             }, 1000);
+             }, 300);
 
          };
          
