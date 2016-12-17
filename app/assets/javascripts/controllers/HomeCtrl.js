@@ -95,7 +95,7 @@
              var preppedMessage = vm.prepMessage("bot", bot_reply);
 
              Messages.send(preppedMessage).then(function() {
-                
+                vm.updateScroll();
              });
          };
 
