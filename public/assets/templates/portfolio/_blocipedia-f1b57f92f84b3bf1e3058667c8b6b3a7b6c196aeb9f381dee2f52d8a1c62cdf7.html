@@ -1,0 +1,49 @@
+  <div class="call-out" 
+  style="background-image: url('/assets/background-2.jpg')">
+    <h1 class="site-title">
+      <a href="/">Byron Weiss</a>
+    </h1>
+    <div class="divider"></div>
+    <h1 class="title">Blocipedia</h1>
+  </div>
+  
+</header>
+
+    <div class="content">
+      <article >
+  <section class="post-content"><p class="center"><img src=/assets/blocipedia-a75e00b3b2e981eccee14f7376daf1181b85654695df394d1fb0bcb7d2a5495b.png alt="" /></p>
+
+<h2 id="explanation">Explanation</h2>
+<p>A wikipedia-like app for posting and editing articles.  Users can upgrade their account permissions via stripe payment in order to create private wikis and collaborate with other users on the site.</p>
+
+<h2 id="solution">Solution</h2>
+<p>Followed a TDD approach in setting up the pundit permissions to limit private wikis to users with upgraded accounts.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">'rails_helper'</span>
+<span class="nb">require</span> <span class="s1">'pundit/rspec'</span>
+
+<span class="n">describe</span> <span class="no">WikiPolicy</span><span class="p">,</span> <span class="ss">type: :policy</span> <span class="k">do</span>
+  <span class="n">subject</span> <span class="p">{</span> <span class="no">WikiPolicy</span> <span class="p">}</span>
+  
+<span class="n">let</span><span class="p">(</span><span class="ss">:current_user</span><span class="p">)</span> <span class="p">{</span> <span class="no">FactoryGirl</span><span class="p">.</span><span class="nf">build_stubbed</span> <span class="ss">:user</span> <span class="p">}</span>
+
+  <span class="n">permissions</span> <span class="ss">:update?</span><span class="p">,</span> <span class="ss">:edit?</span> <span class="k">do</span>
+
+    <span class="n">it</span> <span class="s2">"grants access if wiki is not private"</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">).</span><span class="nf">to</span> <span class="n">permit</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="no">Wiki</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:private</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">))</span>
+    <span class="k">end</span>
+    
+    <span class="n">it</span> <span class="s2">"does not allow access to private wiki"</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">permit</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="no">Wiki</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:private</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">))</span>
+    <span class="k">end</span>
+
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<!--## Conclusion-->
+
+<h2 id="links">Links</h2>
+<p><a href="https://github.com/gitbnw/blocipedia">github</a></p>
+</section>
+</article>
+

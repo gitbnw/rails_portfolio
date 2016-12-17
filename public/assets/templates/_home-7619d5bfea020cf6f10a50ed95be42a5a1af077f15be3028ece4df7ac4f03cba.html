@@ -1,0 +1,165 @@
+<div id="wrapper" class="toggled">
+     <!-- Sidebar -->
+      <div class="chat container" id="sidebar-wrapper">
+         <div class="chat-box" id="chat-box">
+            <div class="chat-message" ng-class="message.role" ng-repeat="message in home.sessionMessages track by $index" id="{{ 'message-' + message.$id }}">
+               <!--<span> {{message.content}} </span>-->
+               <span ng-bind-html="message.content"></span> {{home.updateScroll()}}
+            </div>
+         </div>
+         <div class="chat-floor" id="chat-floor">
+            <div class="quickreplies-container container" id="quickreplies-container">
+               <!--{{reply}}-->
+               <button class="btn btn-info quickrep" ng-click="home.quickExchange(reply, $index + 1)" ng-repeat="reply in home.messageData.quickreplies track by $index">{{reply}}</button>
+            </div>
+            <form id="messageForm" class="form" role="form" ng-submit="home.userExchange()">
+               <div class="form-group">
+                  <div class="input-group">
+                     <button type="submit" class="btn btn-info">Send</button>
+                     <input type="text" class="form-control transparent-input" name="msg" id="message" ng-model="formData.umsg">
+                  </div>
+               </div>
+            </form>
+         </div>
+      </div>
+      <!-- /#sidebar-wrapper -->  
+      
+<div id="page-content-wrapper">
+ <!-- #page-content-wrapper -->
+<div class="container-fluid">   
+   <header class="site-header">
+      <nav class="site-nav">
+         <ul>
+            <li>
+               <a class="page-link" href="#side-toggle" id="side-toggle">
+               <img src=/assets/robot-icon-12245a7598eadaf7bb2976eea521e287ce41a3d26a8e88887fbc0fe4a7b3c53f.png height="128" width="128">
+               
+               </a>
+            </li>
+            <li>
+               <a href="/contact">Contact</a>
+            </li>
+         </ul>
+      </nav>
+   </header>
+   <div class="call-out" style="background-image: url(/assets/background-2-7c3284e69f63d1271b22ab09185961940777e9225250b075684f141ee7151135.jpg)">
+      <h1 class="site-title">
+         <a href="/">Byron Weiss</a>
+      </h1>
+      <div class="divider"></div>
+      <h1>Your Friendly Neighborhood Web-Slinger</h1>
+      <p>I'm a web developer interested in Rails, Angular, and bots.</p>
+      <div class="divider"></div>
+      <!-- Social icons from Font Awesome, if enabled -->
+      <ul>
+         <li>
+            <a href="mailto:byron.weiss@gmail.com" title="Email">
+            <i class="fa fa-fw fa-envelope"></i>
+            </a>
+         </li>
+         <li>
+            <a href="https://github.com/gitbnw" title="Follow on GitHub">
+            <i class="fa fa-fw fa-github"></i>
+            </a>
+         </li>
+         <li>
+            <a href="https://www.linkedin.com/in/byronweiss" title="Follow on LinkedIn">
+            <i class="fa fa-fw fa-linkedin"></i>
+            </a>
+         </li>
+      </ul>
+   </div>
+
+ 
+
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="content">
+                  <div class="home">
+                     <div class="work">
+                        <h2>My Work</h2>
+                        <div class="project">
+                           <div class="project-thumb">
+                              <a href="/portfolio/quota">
+                              <img src=/assets/quota-d279a9c1b8b98507f96df1833b10b641ab78c774cd5e64d93d8b83fce6514b5f.png alt="Quota"/>
+                              </a>
+                           </div>
+                           <div class="project-description">
+                              <a href="/portfolio/quota"><strong>Quota</strong></a>
+                              <p>Quota is a web app for tracking stock performance built on <a href="https://github.com/rails/rails">Rails</a> with <a href="https://github.com/resque/resque">Resque</a>, <a href="http://redis.io/">Redis</a>, and <a href="https://www.postgresql.org/">postgres</a>.  <br>Deployed via <a href="https://github.com/capistrano/capistrano">Capistrano</a> to Digital Ocean.</p>
+                           </div>
+                        </div>
+                        <div class="project">
+                           <div class="project-thumb">
+                              <a href="portfolio/alexa">
+                              <img src=/assets/alexa-10ed1519b05eb894e8dff02583aea168528ef80f8d8ebc7c8f6751cb4e7fbc45.png alt="Alexa skills"/>
+                              </a>
+                           </div>
+                           <div class="project-description">
+                              <a href="portfolio/alexa"><strong>Alexa skills</strong></a>
+                              <p>Three apps/skills for Amazon's Alexa Voice Service built using node.js and ruby with <a href="https://github.com/sinatra/sinatra">Sinatra</a>.  Deployed on Amazon Web Services.</p>
+                           </div>
+                        </div>
+                        <div class="project">
+                           <div class="project-thumb">
+                              <a href="/portfolio/pdfs">
+                              <img src=/assets/pdfs-29d478fccdf6e684d12f9137954d2dadc74108e565bb59a7c21926ad2e4af5e0.png alt="PD Fleet Status"/>
+                              </a>
+                           </div>
+                           <div class="project-description">
+                              <a href="/portfolio/pdfs"><strong>PD Fleet Status</strong></a>
+                              <p>A web application built for a police department on the <a href="https://www.sencha.com/products/extjs/#overview">ExtJS</a> framework and Coldfusion.</p>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="work">
+                        <h2>In Progress</h2>
+                        <span>This is what I am actively working on.</span>
+                        <div class="project">
+                           <div class="project-thumb">
+                              <a href="/portfolio/chatbot">
+                              <img src=/assets/chatbot-49ed42366b6f4c937565b36774f8c487116bf5dfd833c4e78178330f5f193623.png alt="aboutbot"/>
+                              </a>
+                           </div>
+                           <div class="project-description">
+                              <a href="/portfolio/chatbot"><strong>aboutbot</strong></a>
+                              <p>A chatbot for my about page using Wit AI, Angular, and Firebase.</p>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="work">
+                        <h2>Bloc Work</h2>
+                        <span>This was work completed during my time in <a href="http://bloc.io">Bloc's</a> Full Stack program.</span>
+                        <div class="project">
+                           <div class="project-thumb">
+                              <a href="/portfolio/blocjamsang">
+                              <img src=/assets/blocjamsang-4ef90bed92b491a38cb6776e9a98cb82f1c0770982bafff6bcd52302db7915d2.png alt="Bloc Jams Angular"/>
+                              </a>
+                           </div>
+                           <div class="project-description">
+                              <a href="/portfolio/blocjamsang"><strong>Bloc Jams Angular</strong></a>
+                              <p>A music player built with AngularJS, grunt and Node.js.</p>
+                           </div>
+                        </div>
+                        <div class="project">
+                           <div class="project-thumb">
+                              <a href="/portfolio/blocipedia">
+                              <img src=/assets/blocipedia-a75e00b3b2e981eccee14f7376daf1181b85654695df394d1fb0bcb7d2a5495b.png alt="Blocipedia"/>
+                              </a>
+                           </div>
+                           <div class="project-description">
+                              <a href="/portfolio/blocipedia"><strong>Blocipedia</strong></a>
+                              <p>A Ruby on Rails app built with a TDD approach that makes use of the gems- devise, pundit, and stripe.</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- /#page-content-wrapper -->
+      </div>
+   </div>
+   <!-- /#wrapper -->
+</div>
+
