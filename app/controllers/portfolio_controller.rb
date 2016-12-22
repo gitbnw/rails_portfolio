@@ -19,6 +19,9 @@ class PortfolioController < ActionController::Base
   def chatbot
   end
   
+  def tictactoe
+  end 
+  
   private
 
 end

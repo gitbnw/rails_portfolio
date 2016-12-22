@@ -46,10 +46,15 @@
                  controller: 'PortfolioCtrl as portfolio',
                  templateUrl: 'portfolio/_pdfs.html'
              })
-             .state('quota', {
+             .state('portfolio/quota', {
                  url: '/portfolio/quota',
                  controller: 'PortfolioCtrl as portfolio',
                  templateUrl: 'portfolio/_quota.html'
+             })
+             .state('portfolio/tictactoe', {
+                 url: '/portfolio/tictactoe',
+                 controller: 'PortfolioCtrl as portfolio',
+                 templateUrl: 'portfolio/_tictactoe.html'
              });
          $urlRouterProvider.otherwise('home');
      }

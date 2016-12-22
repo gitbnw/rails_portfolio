@@ -4,7 +4,7 @@
          <ul>
             <li>
                <a class="page-link" href="/">
-               <img src=<%= asset_path('home.png') %> height="128" width="128">
+               <img src=<%= asset_path('home.png') %> height="96" width="96">
                </a>
             </li>
             <li>
@@ -16,7 +16,7 @@
 
   
   <div class="call-out" 
-  style="background-image: url('/img/background-2.jpg')">
+  style="background-image: url(<%= asset_path('background-2.jpg') %>)">
     <h1 class="site-title">
       <a href="/">Byron Weiss</a>
     </h1>
@@ -28,7 +28,7 @@
 
     <div class="content">
       <article >
-  <section class="post-content"><p class="center"><img src="/img/chatbot.png" alt="" /></p>
+  <section class="post-content"><p class="center"><img src=<%= asset_path('chatbot.png') %> alt="" /></p>
 
 <h2 id="explanation">Explanation</h2>
 <p>While attending the Hackathon for Hunger, I worked on a team that produced a messenger bot that was tasked with replying to user sms messages regarding locations of nearby food depositories in the Chicago area.  I mostly listened and absorbed the work going on around me because the programmers were more seasoned then myself.</p>
@@ -63,8 +63,8 @@
                      <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span>
                      <span class="nx">Wit</span><span class="p">.</span><span class="nx">converse</span><span class="p">(</span><span class="nx">witData</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span>
                          <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">status</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
-                             <span class="c1">// this data is the rendered json of the messages_controller #converse response</span>
-                             <span class="c1">// if wit doesn't understand initialize cleverbot track</span>
+                          <span class="c1">// data = json via messages_controller #converse</span>
+                          <span class="c1">// if wit doesn't understand initialize cleverbot track</span>
                              <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">cleverbotInit</span><span class="p">)</span> <span class="p">{</span>
                                  <span class="nx">vm</span><span class="p">.</span><span class="nx">cleverbotInit</span><span class="p">(</span><span class="nx">vm</span><span class="p">.</span><span class="nx">messageData</span><span class="p">)</span>
                              <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
