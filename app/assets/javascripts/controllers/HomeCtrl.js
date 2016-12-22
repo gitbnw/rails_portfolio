@@ -14,14 +14,6 @@
                  $("#wrapper").toggleClass("toggled");
              });
          });
-         //jquery to delay quickreplies-container by chat-message transition-delay:value x number of messages
-         vm.displayQuickCont = function() {
-             var $quickcontain = $('#quickreplies-container');
-             var $chat_message = $('.chat-message');
-
-             var message_delay_sum = $chat_message.length
-
-         };
 
          vm.updateScroll = function() {
 
@@ -90,7 +82,6 @@
                  vm.messageData.quickreplies = bot_reply.quickreplies;
                  
              }
-             //the bot will converse until it gets a stop
 
              var preppedMessage = vm.prepMessage("bot", bot_reply);
 
@@ -106,11 +97,7 @@
                  $scope.session_id = $scope.firebaseUser.uid + (new Date() / 1000);
                  $scope.wit_id = $scope.firebaseUser.uid + (new Date() / 1000);
                  witData.session_id = $scope.wit_id;
-                 // create a query for messages related to session
-
                  vm.sessionMessages = Messages.getSessionMessages($scope.session_id);
-
-                 //quick replies should only show for last session message
                  vm.messageData = {};
                  vm.messageData.session = $scope.session_id;
                 var context = {};
@@ -159,7 +146,6 @@
              witData.session_id = $scope.wit_id;
              
                  Wit.converse(witData, context)
-                     //call func to send response msg to firebase
                      .success(function(data, status, headers, config) {
                          witData.q = "";
                          vm.delayQuickReplies(data.length)
@@ -190,13 +176,10 @@
                              } else {
                                  vm.delayQuickReplies(data.length)
                                  for (var i = 0; i < data.length; i++) {
-    
                                      vm.handleBotReply(data[i]);
-    
                                  }
                              }
                          });
-                  
                  });
          };
      }

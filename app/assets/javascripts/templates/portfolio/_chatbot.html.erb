@@ -1,10 +1,10 @@
-<div id="page-content-wrapper">
+ <div id="page-content-wrapper">
    <header class="site-header">
       <nav class="site-nav">
          <ul>
             <li>
-               <a class="page-link" href="/home">
-               <img src="../assets/home.png" height="128" width="128">
+               <a class="page-link" href="/">
+               <img src=<%= asset_path('home.png') %> height="128" width="128">
                </a>
             </li>
             <li>
@@ -13,27 +13,72 @@
          </ul>
       </nav>
    </header>
+
   
   <div class="call-out" 
-  style="background-image: url(<%= asset_path('background-2.jpg') %>)">
+  style="background-image: url('/img/background-2.jpg')">
     <h1 class="site-title">
       <a href="/">Byron Weiss</a>
     </h1>
     <div class="divider"></div>
-    <h1 class="title">aboutbot</h1>
+    <h1 class="title">AbotAbout</h1>
   </div>
+  
+</header>
 
     <div class="content">
       <article >
-  <section class="post-content"><p class="center"><img src=<%= asset_path('chatbot.png') %> alt="" /></p>
+  <section class="post-content"><p class="center"><img src="/img/chatbot.png" alt="" /></p>
 
 <h2 id="explanation">Explanation</h2>
-<p>In progress..</p>
+<p>While attending the Hackathon for Hunger, I worked on a team that produced a messenger bot that was tasked with replying to user sms messages regarding locations of nearby food depositories in the Chicago area.  I mostly listened and absorbed the work going on around me because the programmers were more seasoned then myself.</p>
 
-<p>Right now I am working with Sinatra / Angular which is kind of an odd setup =)</p>
+<p>I took what I learned from watching them plus + what I had learned about realtime databinding of AngularFire and attempted to create a chatbot for my portfolio site.</p>
+
+<h2 id="challenge">Challenge</h2>
+<p>The majority of the challenge here was configuring the Wit’s language processing to work as I intended.  It is awesome Wit allows free access to their client - but as with any third party API - you are at the mercy of it’s output.  In this case the API behavior produced inconsistent output which would break the central purpose for having a chatbot.</p>
+
+<h2 id="solution">Solution</h2>
+<p>My solution for some of the unpredictable results I would receive from the language processing API was two part:</p>
+
+<ul>
+  <li>Use quickreply buttons to encourage the user to respond with the text the bot’s logic is built to handle directly.</li>
+  <li>Use cleverbot’s api to handle respondes to user text when the bot’s certainty level went under 95%.</li>
+</ul>
+
+<p>This works well but sacrifices a lot of the “AI” component - if you are programming to respond to menu clicks then there isn’t much need for language processing.</p>
+
+<p>Here is a code sample of the userExchange from the application’s main ng-controller.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">         <span class="nx">vm</span><span class="p">.</span><span class="nx">userExchange</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+             <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="kc">null</span>
+             <span class="nx">vm</span><span class="p">.</span><span class="nx">prepMessage</span><span class="p">(</span><span class="s2">"human"</span><span class="p">,</span> <span class="nx">message</span><span class="p">);</span>
+             <span class="c1">//send user message to firebase</span>
+             <span class="nx">Messages</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">vm</span><span class="p">.</span><span class="nx">messageData</span><span class="p">)</span>
+                 <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                     <span class="nx">$scope</span><span class="p">.</span><span class="nx">formData</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">//reset form</span>
+                     <span class="nx">witData</span><span class="p">.</span><span class="nx">q</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">messageData</span><span class="p">.</span><span class="nx">content</span><span class="p">;</span> <span class="c1">//send same msg to wit</span>
+                     <span class="nx">witData</span><span class="p">.</span><span class="nx">session_id</span> <span class="o">=</span> <span class="nx">$scope</span><span class="p">.</span><span class="nx">wit_id</span><span class="p">;</span>
+                     <span class="c1">//send user message to wit</span>
+                     <span class="kd">var</span> <span class="nx">context</span> <span class="o">=</span> <span class="p">{};</span>
+                     <span class="nx">Wit</span><span class="p">.</span><span class="nx">converse</span><span class="p">(</span><span class="nx">witData</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span>
+                         <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">status</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">config</span><span class="p">)</span> <span class="p">{</span>
+                             <span class="c1">// this data is the rendered json of the messages_controller #converse response</span>
+                             <span class="c1">// if wit doesn't understand initialize cleverbot track</span>
+                             <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">cleverbotInit</span><span class="p">)</span> <span class="p">{</span>
+                                 <span class="nx">vm</span><span class="p">.</span><span class="nx">cleverbotInit</span><span class="p">(</span><span class="nx">vm</span><span class="p">.</span><span class="nx">messageData</span><span class="p">)</span>
+                             <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                                 <span class="nx">vm</span><span class="p">.</span><span class="nx">delayQuickReplies</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span>
+                                 <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                                     <span class="nx">vm</span><span class="p">.</span><span class="nx">handleBotReply</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+                                 <span class="p">}</span>
+                             <span class="p">}</span>
+                         <span class="p">});</span>
+                 <span class="p">});</span>
+         <span class="p">};</span></code></pre></figure>
 
 <h2 id="links">Links</h2>
-<p><a href="https://github.com/gitbnw/chatbot">github</a></p>
+<p><a href="https://github.com/gitbnw/rails_portfolio">github</a></p>
 </section>
 </article>
 
@@ -41,4 +86,4 @@
 
 
     </div>
- </div>
+</div>
