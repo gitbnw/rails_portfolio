@@ -1,0 +1,139 @@
+<div id="page-content-wrapper">
+   <header class="site-header">
+      <nav class="site-nav">
+         <ul>
+            <li>
+               <a class="page-link" href="/">
+               <img src=/assets/home-fc96146798a3ef0441e2aa4acf8dd399f98d03f8e248fd65d8c0a695bc3cf3ac.png height="96" width="96">
+               </a>
+            </li>
+            <li>
+               <a href="/contact">Contact</a>
+            </li>
+         </ul>
+      </nav>
+   </header>
+  <div class="call-out" 
+  style="background-image: url(/assets/background-2-7c3284e69f63d1271b22ab09185961940777e9225250b075684f141ee7151135.jpg)">
+    <h1 class="site-title">
+      <a href="/">Byron Weiss</a>
+    </h1>
+    <div class="divider"></div>
+    <h1 class="title">Quota</h1>
+  </div>
+  
+
+
+    <div class="content">
+      <article >
+  <section class="post-content"><p class="center"><img src=/assets/quota-d279a9c1b8b98507f96df1833b10b641ab78c774cd5e64d93d8b83fce6514b5f.png alt="" /></p>
+
+<h2 id="explanation">Explanation</h2>
+<p>This was my first self-made project using Ruby on Rails 4.  My goal was to create a functional web app that could lookup live financial market data and allow users to track and save that data.</p>
+
+<h2 id="challenge">Challenge</h2>
+
+<p>The challenge here for me was learning to use background processes in a web application.  I had previously used REST services in the more common approach of the request being initiated by the user by submitting a form or pressing a button, but here I wanted the app to automatically send notices to a user when a stock’s trading price crossed a pre-determined price point.  To accomplish that I needed to frequently be requesting and reading data from a web service.</p>
+
+<h2 id="solution">Solution</h2>
+
+<p>Using the gems - foreman, upstart, and resque - I created tasks that were saved in a redis store and run by the server in a scheduled time period.  This was good exposure to the behind the scenes/devops work that needs to be wrangled in a hosted environment.  Here I used Digital Ocean and I deployed using Capistrano.</p>
+
+<p>I displayed the stocks activity in gradients to get visualize representation of current trading activity with some ruby, coffeescript and HTML5 properties:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="k">def</span> <span class="nf">price_change_assign</span><span class="p">(</span><span class="n">stocks</span><span class="p">)</span>
+
+    <span class="n">stocks</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">stock</span><span class="o">|</span>
+      <span class="vi">@change</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">((</span><span class="n">stock</span><span class="p">.</span><span class="nf">lasttradepriceonly</span> <span class="o">/</span> <span class="n">stock</span><span class="p">.</span><span class="nf">lasttradepriceonly</span> <span class="p">)</span> 
+      <span class="o">-</span> <span class="p">(</span><span class="n">stock</span><span class="p">.</span><span class="nf">lasttradepriceonly_was</span> <span class="o">/</span> <span class="n">stock</span><span class="p">.</span><span class="nf">lasttradepriceonly</span><span class="p">))</span>
+      <span class="n">stock</span><span class="p">.</span><span class="nf">ticks</span><span class="p">.</span><span class="nf">pop</span> <span class="k">if</span> <span class="n">stock</span><span class="p">.</span><span class="nf">ticks</span><span class="p">.</span><span class="nf">length</span> <span class="o">==</span> <span class="mi">10</span>
+      <span class="k">if</span> <span class="vi">@change</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">.</span><span class="mo">01</span>
+        <span class="n">stock</span><span class="p">[</span><span class="ss">:ticks</span><span class="p">].</span><span class="nf">unshift</span><span class="p">(</span><span class="s1">'green'</span><span class="p">)</span>
+      <span class="k">elsif</span> <span class="vi">@change</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mo">01</span>
+        <span class="n">stock</span><span class="p">[</span><span class="ss">:ticks</span><span class="p">].</span><span class="nf">unshift</span><span class="p">(</span><span class="s1">'red'</span><span class="p">)</span>
+      <span class="k">else</span>
+        <span class="n">stock</span><span class="p">[</span><span class="ss">:ticks</span><span class="p">].</span><span class="nf">unshift</span><span class="p">(</span><span class="s1">'#272B30'</span><span class="p">)</span>
+      <span class="k">end</span>
+      
+    <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;%</span> <span class="err">@</span><span class="nx">stocks</span><span class="p">.</span><span class="nx">each</span> <span class="k">do</span> <span class="o">|</span><span class="nx">stock</span><span class="o">|</span> <span class="o">%&gt;</span>
+
+    <span class="kd">var</span> <span class="nx">canvas</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#canvas-&lt;%= stock.id %&gt;'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">height</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">colorArray</span> <span class="o">=</span> <span class="o">&lt;%=</span> <span class="nx">raw</span> <span class="nx">stock</span><span class="p">.</span><span class="nx">ticks</span><span class="p">.</span><span class="nx">to_json</span> <span class="o">%&gt;</span>
+    
+    <span class="nx">$stock</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">"&lt;%= j render(stock) %&gt;"</span><span class="p">);</span>
+
+    <span class="nx">$stockrow</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">'#stock-row-&lt;%= stock.id %&gt;'</span><span class="p">)</span>
+
+    <span class="nx">$stockrow</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">$stock</span><span class="p">)</span>
+
+    <span class="nx">show</span><span class="p">(</span><span class="nx">canvas</span><span class="p">,</span> <span class="nx">colorArray</span><span class="p">,</span> <span class="nx">width</span><span class="p">)</span>
+
+    
+<span class="o">&lt;%</span> <span class="nx">end</span> <span class="o">%&gt;</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">canvasArr</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="vi">@</span><span class="na">colorize</span> <span class="o">=</span> <span class="p">(</span><span class="nx">canvasObj</span><span class="p">)</span> <span class="o">-&gt;</span>
+  <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">while</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'colorArray'</span><span class="p">].</span><span class="na">length</span>
+    <span class="nx">stop</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">/</span> <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'colorArray'</span><span class="p">].</span><span class="na">length</span>
+    <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'gradi'</span><span class="p">].</span><span class="na">addColorStop</span><span class="p">(</span><span class="nx">stop</span><span class="p">,</span> <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'colorArray'</span><span class="p">][</span><span class="nx">i</span><span class="p">])</span>
+    <span class="nx">i</span><span class="o">++</span>
+  <span class="k">return</span> <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'gradi'</span><span class="p">]</span>
+    
+<span class="vi">@</span><span class="na">show</span> <span class="o">=</span> <span class="p">(</span><span class="nx">canvas</span><span class="p">,</span> <span class="nx">colorArray</span><span class="p">,</span> <span class="nx">width</span><span class="p">)</span> <span class="o">-&gt;</span>
+
+  <span class="nx">ctx</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="na">getContext</span><span class="p">(</span><span class="s">'2d'</span><span class="p">)</span>
+  <span class="nx">gradi</span> <span class="o">=</span> <span class="nx">ctx</span><span class="p">.</span><span class="na">createLinearGradient</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">width</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+  <span class="nx">find_canvasObj</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="na">grep</span> <span class="nx">canvasArr</span><span class="p">,</span> <span class="p">(</span><span class="nx">canvasObj</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nx">canvasObj</span><span class="p">[</span><span class="s">"canvas"</span><span class="p">]</span> <span class="o">==</span> <span class="nx">canvas</span> 
+  
+  <span class="nx">canvasObj</span> <span class="o">=</span> <span class="p">{}</span>
+  <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'gradi'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">gradi</span>
+  <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'canvas'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">canvas</span>
+  <span class="nx">canvasObj</span><span class="p">[</span><span class="s">'colorArray'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">colorArray</span>
+  <span class="nx">canvasArr</span><span class="p">.</span><span class="na">push</span><span class="p">(</span><span class="nx">canvasObj</span><span class="p">)</span>
+  <span class="nx">this_canvasObj</span> <span class="o">=</span> <span class="nx">canvasObj</span>
+  <span class="nx">this_canvasObj</span><span class="p">[</span><span class="s">'gradi'</span><span class="p">]</span> <span class="o">=</span> <span class="nx">gradi</span>
+  <span class="nx">ctx</span><span class="p">.</span><span class="na">fillStyle</span> <span class="o">=</span> <span class="nx">colorize</span><span class="p">(</span><span class="nx">this_canvasObj</span><span class="p">);</span>
+  <span class="nx">ctx</span><span class="p">.</span><span class="na">fillRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nx">width</span><span class="p">,</span><span class="mi">24</span><span class="p">);</span> </code></pre></figure>
+
+<h2 id="results">Results</h2>
+
+<p>The good<br />
+    * Exposure to TDD / Rspec<br />
+    * Devise for user registration / authentication<br />
+    * some basic auotmation to “test drive” app with temporary profile and data<br />
+    * coffeescript   C|__|<br />
+    * data driven html 5 gradients</p>
+
+<p>The less good<br />
+    * Difficult to find sources of free endpoints for market data.  And when your app is built around using that data, you can get trapped in the “garbage in, garbage out” cycle.  <br />
+    * I pushed to try to make this more object oriented then any of my previous RoR attempts.  I still have plenty ways to go but I did start noticing more the importance of naming methods/variables in a way that would lend themselves to further use throughout the application while not requiring the programmer to go back through the code in search of what the method is or what it returns.<br />
+    * Many configuration tweaks in deployment.  Hard to track those changes, partially because you get sick of writing commit messages that aren’t just salty expressions of frustration  (╯°□°)╯︵ ┻━┻.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<blockquote>
+  <p>A work is never completed except by some accident such as weariness, satisfaction, the need to deliver, or death: for, in relation to who or what is making it, it can only be one stage in a series of inner transformations. –Paul Valéry</p>
+</blockquote>
+
+<p>This will certainly be the case in a less dramatic fashion for a relatively new developer such as myself.  The rate of new material being learned is outstripping that of your production.  It’s not neccessarily bad but it makes completing a project, especially one that was self-assigned, a bit of a perpetual mouse wheel.</p>
+
+<h2 id="links">Links</h2>
+<p><a href="https://github.com/gitbnw/quota">github</a></p>
+</section>
+</article>
+
+<!-- Disqus -->
+
+
+    </div>
+
+ </div>

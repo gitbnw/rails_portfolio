@@ -1,0 +1,96 @@
+<div id="page-content-wrapper">
+   <header class="site-header">
+      <nav class="site-nav">
+         <ul>
+            <li>
+               <a class="page-link" href="/">
+               <img src=/assets/home-fc96146798a3ef0441e2aa4acf8dd399f98d03f8e248fd65d8c0a695bc3cf3ac.png height="96" width="96">
+               </a>
+            </li>
+            <li>
+               <a href="/contact">Contact</a>
+            </li>
+         </ul>
+      </nav>
+   </header>
+  <div class="call-out" 
+  style="background-image: url(/assets/background-2-7c3284e69f63d1271b22ab09185961940777e9225250b075684f141ee7151135.jpg)">
+    <h1 class="site-title">
+      <a href="/">Byron Weiss</a>
+    </h1>
+    <div class="divider"></div>
+    <h1 class="title">Alexa skills</h1>
+  </div>
+
+
+    <div class="content">
+      <article >
+  <section class="post-content"><p class="center"><img src=/assets/alexa-10ed1519b05eb894e8dff02583aea168528ef80f8d8ebc7c8f6751cb4e7fbc45.png alt="" /></p>
+
+<h2 id="explanation">Explanation</h2>
+<p>I built 3 apps/skills for Amazon’s Alexa Voice Service.</p>
+
+<p>Redbird Games (a trivia game based of the St. Louis Cardinals) &amp;  Odd Facts (a factoid generator) were built from tutorials, and were done to get a feel for Alexa’s capabilities.</p>
+
+<h2 id="challenge">Challenge</h2>
+<p>The new encounters here in order of difficulty: Sinatra, Alexa, Amazon Web Services.  I found the <a href="https://github.com/damianFC/alexa-rubykit">alexa-rubykit</a> gem and it’s tutorial very helpful in walking through the process.<br />
+The process of verifiying an SSL certificate was also new to me and a requirement from Amazon.  A little tricky but interesting stuff.</p>
+
+<h2 id="solution">Solution</h2>
+<p>A look at handling the primary intent request from Alexa in which a user requests a stock lookup from my app.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="k">if</span> <span class="p">(</span><span class="n">alexa_request</span><span class="p">.</span><span class="nf">type</span> <span class="o">==</span> <span class="s1">'INTENT_REQUEST'</span><span class="p">)</span>
+    <span class="c1"># Process your Intent Request</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">alexa_request</span><span class="p">.</span><span class="nf">name</span> <span class="o">==</span> <span class="s1">'GetQuote'</span><span class="p">)</span>
+      <span class="vi">@symbol_raw</span> <span class="o">=</span> <span class="n">alexa_request</span><span class="p">.</span><span class="nf">slots</span><span class="p">[</span><span class="s1">'SymbolRequest'</span><span class="p">][</span><span class="s1">'value'</span><span class="p">]</span>
+      <span class="vi">@symbol</span> <span class="o">=</span> <span class="vi">@symbol_raw</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/[^A-Za-z]/</span><span class="p">,</span> <span class="s1">''</span><span class="p">).</span><span class="nf">upcase</span>
+      <span class="k">if</span> <span class="vi">@symbol</span><span class="p">.</span><span class="nf">nil?</span>
+        <span class="n">response</span><span class="p">.</span><span class="nf">add_speech</span><span class="p">(</span><span class="s2">"I'm sorry, I didn't catch that stock symbol. 
+        Which quote would you like?"</span><span class="p">)</span>
+        <span class="n">end_session</span> <span class="o">=</span> <span class="kp">false</span>
+      <span class="k">else</span>
+        <span class="vi">@output</span> <span class="o">=</span> <span class="no">Markit</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">find_quote</span><span class="p">(</span><span class="vi">@symbol</span><span class="p">).</span><span class="nf">output</span>
+        <span class="k">if</span> <span class="vi">@output</span><span class="p">[</span><span class="s2">"Error"</span><span class="p">]</span>
+          <span class="n">response</span><span class="p">.</span><span class="nf">add_speech</span><span class="p">(</span><span class="s2">"I'm sorry, I couldn't find that listing.  
+          I provide quote information for most widely traded companies 
+          by their symbol, like AMZN, or TSLA. Which quote would you like? "</span><span class="p">)</span>
+        <span class="n">end_session</span> <span class="o">=</span> <span class="kp">false</span>
+        <span class="k">else</span>
+          <span class="vi">@ltp</span> <span class="o">=</span> <span class="vi">@output</span><span class="p">[</span><span class="s2">"StockQuote"</span><span class="p">][</span><span class="s2">"LastPrice"</span><span class="p">]</span>
+          <span class="vi">@change_float</span> <span class="o">=</span> <span class="vi">@output</span><span class="p">[</span><span class="s2">"StockQuote"</span><span class="p">][</span><span class="s2">"ChangePercent"</span><span class="p">].</span><span class="nf">to_f</span>
+          <span class="vi">@change</span> <span class="o">=</span> <span class="vi">@change_float</span><span class="p">.</span><span class="nf">round</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nf">to_s</span>
+          <span class="vi">@name</span> <span class="o">=</span> <span class="vi">@output</span><span class="p">[</span><span class="s2">"StockQuote"</span><span class="p">][</span><span class="s2">"Name"</span><span class="p">]</span>
+          
+          <span class="k">if</span> <span class="vi">@change_float</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="vi">@change_sign</span> <span class="o">=</span> <span class="s2">"up"</span>
+            <span class="vi">@changestr</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="vi">@change_sign</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="vi">@change</span><span class="si">}</span><span class="s2">"</span>
+          <span class="k">elsif</span> <span class="vi">@change_float</span> <span class="o">&lt;</span> <span class="mi">0</span>
+            <span class="vi">@change_sign</span> <span class="o">=</span> <span class="s2">"down"</span>
+            <span class="vi">@changestr</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="vi">@change_sign</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="vi">@change</span><span class="si">}</span><span class="s2">"</span>
+          <span class="k">else</span>
+            <span class="vi">@changestr</span> <span class="o">=</span> <span class="s2">"unchanged"</span>
+          <span class="k">end</span>
+          
+          <span class="n">response</span><span class="p">.</span><span class="nf">add_speech</span><span class="p">(</span><span class="s2">"The last traded price of </span><span class="si">#{</span><span class="vi">@name</span><span class="si">}</span><span class="s2"> is 
+          </span><span class="si">#{</span><span class="vi">@ltp</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="vi">@changestr</span><span class="si">}</span><span class="s2"> percent"</span><span class="p">)</span>
+          <span class="vi">@card_string</span> <span class="o">=</span> <span class="s2">"</span><span class="si">#{</span><span class="vi">@ltp</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="vi">@change</span><span class="si">}</span><span class="s2">%"</span>
+          <span class="n">response</span><span class="p">.</span><span class="nf">add_hash_card</span><span class="p">(</span> <span class="p">{</span> <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="vi">@symbol</span><span class="p">,</span> <span class="ss">:content</span> <span class="o">=&gt;</span> <span class="vi">@card_string</span> <span class="p">}</span> <span class="p">)</span>  
+        <span class="k">end</span>
+      <span class="k">end</span></code></pre></figure>
+
+<h2 id="results">Results</h2>
+<p>My skill accomplished what I set out to do although  I did run into limitations on quote availability and refresh timing using a free web service for financial data.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>Further development I’ve thought about for this app would be to utilize a user based context for the requests in which they could save collections of stocks in a database under their personal profile then access those stocks upon re-entering the application.  In other words, beyond requesting individual stocks, the user could ask how for performance information on a portfolio of stocks.</p>
+
+<h2 id="links">Links</h2>
+<p><a href="https://github.com/gitbnw/SingleQuote">github</a></p>
+</section>
+</article>
+
+<!-- Disqus -->
+
+
+    </div>
+</div>
